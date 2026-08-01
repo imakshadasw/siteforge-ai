@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import WebsitePreview from "./WebsitePreview";
 
 type GenerateResponse = {
   heroTitle: string;
@@ -107,36 +108,15 @@ export default function GeneratorForm() {
             {loading ? "Generating..." : "✨ Generate Website"}
           </button>
 
-          {generated && result && (
-            <div className="mt-10 bg-[#111827] border border-cyan-700 rounded-xl p-8">
-
-              <h2 className="text-3xl font-bold text-cyan-400">
-                {result.heroTitle}
-              </h2>
-
-              <p className="mt-3 text-gray-300">
-                {result.heroSubtitle}
-              </p>
-
-              <p className="mt-6 text-gray-400">
-                {result.about}
-              </p>
-
-              <div className="mt-8 grid md:grid-cols-3 gap-4">
-                {result.services.map((service, index) => (
-                  <div
-                    key={index}
-                    className="bg-[#0b1120] rounded-xl p-5 text-center"
-                  >
-                    {service}
-                  </div>
-                ))}
-              </div>
-
-            </div>
-          )}
-
         </div>
+
+        {generated && result && (
+          <WebsitePreview
+            data={result}
+            city={city}
+          />
+        )}
+
       </div>
     </section>
   );
