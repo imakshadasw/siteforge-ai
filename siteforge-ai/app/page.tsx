@@ -1,3 +1,5 @@
+import Pricing from "./components/Pricing";
+import Testimonials from "./components/Testimonials";
 import Stats from "./components/Stats";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -11,6 +13,8 @@ export default function Home() {
       <Hero />
       <Features />
       <Stats />
+      <Testimonials />
+      <Pricing />
       <Footer />
     </main>
   );
