@@ -1,3 +1,4 @@
+import GeneratorForm from "./components/GeneratorForm";
 import Pricing from "./components/Pricing";
 import Testimonials from "./components/Testimonials";
 import Stats from "./components/Stats";
@@ -11,6 +12,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#030712] text-white">
       <Navbar />
       <Hero />
+      <GeneratorForm />
       <Features />
       <Stats />
       <Testimonials />
