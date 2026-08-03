@@ -1,31 +1,43 @@
 export default function Hero() {
   return (
-    <section className="flex flex-col items-center justify-center text-center px-6 py-32">
+    <section className="relative overflow-hidden py-28 px-6">
 
-      <span className="text-cyan-400 font-semibold tracking-widest uppercase">
-        AI Website Builder
-      </span>
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/30 via-transparent to-blue-900/20 blur-3xl" />
 
-      <h1 className="text-6xl font-extrabold mt-6 leading-tight">
-        Build Beautiful <br />
-        Business Websites <br />
-        with AI
-      </h1>
+      <div className="relative max-w-6xl mx-auto text-center">
 
-      <p className="text-gray-400 mt-6 max-w-2xl text-lg">
-        Generate stunning business websites in less than a minute.
-        No coding. No designing.
-        Just describe your business and let AI do the work.
-      </p>
+        <span className="bg-cyan-500/20 border border-cyan-500 px-4 py-2 rounded-full text-cyan-300 text-sm">
+          🚀 AI Powered Website Builder
+        </span>
 
-      <div className="flex gap-4 mt-10">
-        <button className="bg-cyan-500 hover:bg-cyan-400 transition px-8 py-4 rounded-xl font-semibold">
-          Get Started
-        </button>
+        <h1 className="text-6xl md:text-7xl font-extrabold mt-8 leading-tight">
+          Build Professional
+          <br />
+          Business Websites
+          <br />
+          <span className="text-cyan-400">
+            in Seconds
+          </span>
+        </h1>
 
-        <button className="border border-cyan-500 px-8 py-4 rounded-xl">
-          Live Demo
-        </button>
+        <p className="mt-8 text-xl text-gray-400 max-w-3xl mx-auto leading-8">
+          Describe your business, choose a theme,
+          and let AI generate a beautiful website
+          instantly.
+        </p>
+
+        <div className="mt-12 flex justify-center gap-5 flex-wrap">
+
+          <button className="bg-cyan-500 hover:bg-cyan-400 px-8 py-4 rounded-xl text-black font-bold transition">
+            Start Building
+          </button>
+
+          <button className="border border-cyan-500 px-8 py-4 rounded-xl hover:bg-cyan-500 hover:text-black transition">
+            Live Demo
+          </button>
+
+        </div>
+
       </div>
 
     </section>

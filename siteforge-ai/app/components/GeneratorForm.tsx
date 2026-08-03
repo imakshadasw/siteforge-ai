@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import WebsitePreview from "./WebsitePreview";
+import ThemeSelector from "./ThemeSelector";
 
 type GenerateResponse = {
   heroTitle: string;
@@ -17,6 +18,8 @@ export default function GeneratorForm() {
   const [businessType, setBusinessType] = useState("Restaurant");
   const [city, setCity] = useState("");
   const [description, setDescription] = useState("");
+
+  const [theme, setTheme] = useState("Dark");
 
   const [generated, setGenerated] = useState(false);
   const [result, setResult] = useState<GenerateResponse | null>(null);
@@ -56,7 +59,7 @@ export default function GeneratorForm() {
 
   return (
     <section className="py-24 px-6">
-      <div className="max-w-3xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
+      <div className="max-w-4xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
 
         <h2 className="text-4xl font-bold text-center text-cyan-400 mb-8">
           Generate Your Website
@@ -84,6 +87,11 @@ export default function GeneratorForm() {
             <option>Clinic</option>
             <option>Real Estate</option>
           </select>
+
+          <ThemeSelector
+            theme={theme}
+            setTheme={setTheme}
+          />
 
           <input
             type="text"
@@ -114,6 +122,7 @@ export default function GeneratorForm() {
           <WebsitePreview
             data={result}
             city={city}
+            theme={theme}
           />
         )}
 

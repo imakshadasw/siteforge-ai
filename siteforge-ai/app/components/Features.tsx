@@ -1,45 +1,66 @@
+const features = [
+  {
+    title: "⚡ Instant Generation",
+    description: "Generate complete business websites in seconds.",
+  },
+  {
+    title: "🎨 Multiple Themes",
+    description: "Choose between Dark, Modern, Luxury and Corporate.",
+  },
+  {
+    title: "🤖 AI Powered",
+    description: "Generate content tailored to your business.",
+  },
+  {
+    title: "📱 Responsive",
+    description: "Looks great on desktop, tablet and mobile.",
+  },
+  {
+    title: "⚙ Easy Customization",
+    description: "Edit text, colors and layout anytime.",
+  },
+  {
+    title: "🚀 Export Ready",
+    description: "Download your website and deploy anywhere.",
+  },
+];
+
 export default function Features() {
   return (
-    <section className="py-24 px-6">
+    <section
+      id="features"
+      className="py-24 px-6"
+    >
+      <div className="max-w-7xl mx-auto">
 
-      <h2 className="text-4xl font-bold text-center text-cyan-400 mb-16">
-        Why Choose SiteForge AI?
-      </h2>
+        <h2 className="text-5xl font-bold text-center text-cyan-400">
+          Why SiteForge AI?
+        </h2>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <p className="text-center text-gray-400 mt-6 max-w-2xl mx-auto">
+          Everything you need to build beautiful business websites without writing code.
+        </p>
 
-        <div className="bg-[#0b1120] border border-cyan-900 rounded-2xl p-8 hover:border-cyan-400 transition">
-          <div className="text-5xl mb-4">⚡</div>
-          <h3 className="text-2xl font-bold mb-3">
-            Instant Websites
-          </h3>
-          <p className="text-gray-400">
-            Generate beautiful business websites in under one minute using AI.
-          </p>
-        </div>
+        <div className="grid md:grid-cols-3 gap-8 mt-16">
 
-        <div className="bg-[#0b1120] border border-cyan-900 rounded-2xl p-8 hover:border-cyan-400 transition">
-          <div className="text-5xl mb-4">🎨</div>
-          <h3 className="text-2xl font-bold mb-3">
-            Stunning Design
-          </h3>
-          <p className="text-gray-400">
-            Modern layouts optimized for conversions and mobile devices.
-          </p>
-        </div>
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+              className="bg-[#0b1120] border border-cyan-900 rounded-2xl p-8 hover:border-cyan-400 hover:scale-105 transition"
+            >
+              <h3 className="text-2xl font-bold text-cyan-400">
+                {feature.title}
+              </h3>
 
-        <div className="bg-[#0b1120] border border-cyan-900 rounded-2xl p-8 hover:border-cyan-400 transition">
-          <div className="text-5xl mb-4">🚀</div>
-          <h3 className="text-2xl font-bold mb-3">
-            Deploy Instantly
-          </h3>
-          <p className="text-gray-400">
-            Publish your website with one click using Vercel hosting.
-          </p>
+              <p className="mt-5 text-gray-400">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+
         </div>
 
       </div>
-
     </section>
   );
 }

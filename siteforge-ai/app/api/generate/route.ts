@@ -1,86 +1,104 @@
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const body = await request.json();
+export async function POST(req: Request) {
+  const body = await req.json();
 
-  const {
-    businessName,
-    businessType,
-    city,
-    description,
-  } = body;
+  const { businessName, businessType, city } = body;
 
+  let heroTitle = "";
   let heroSubtitle = "";
+  let about = "";
   let services: string[] = [];
 
   switch (businessType) {
-    case "Cafe":
-      heroSubtitle = `Fresh Coffee & Cozy Moments in ${city}`;
+    case "Restaurant":
+      heroTitle = businessName || "My Restaurant";
+      heroSubtitle = `Delicious food served fresh every day in ${city}.`;
+      about =
+        "We offer freshly prepared meals made with high-quality ingredients. Whether you're dining with family or friends, we provide a warm and welcoming experience.";
       services = [
-        "☕ Specialty Coffee",
-        "🥐 Fresh Bakery",
-        "📶 Free Wi-Fi",
+        "Dine-In",
+        "Home Delivery",
+        "Online Reservation",
       ];
       break;
 
-    case "Restaurant":
-      heroSubtitle = `Delicious Food in ${city}`;
+    case "Cafe":
+      heroTitle = businessName || "My Cafe";
+      heroSubtitle = `Fresh coffee and cozy vibes in ${city}.`;
+      about =
+        "Enjoy handcrafted coffee, delicious snacks, and a relaxing atmosphere perfect for work or catching up with friends.";
       services = [
-        "🍕 Fine Dining",
-        "🚚 Home Delivery",
-        "🎉 Catering",
+        "Coffee",
+        "Bakery",
+        "Free Wi-Fi",
       ];
       break;
 
     case "Gym":
-      heroSubtitle = `Transform Your Fitness Journey`;
+      heroTitle = businessName || "My Gym";
+      heroSubtitle = `Achieve your fitness goals in ${city}.`;
+      about =
+        "Our gym features modern equipment, certified trainers, and personalized fitness programs to help you stay healthy.";
       services = [
-        "💪 Personal Training",
-        "🏃 Cardio Zone",
-        "🥗 Nutrition Plans",
+        "Personal Training",
+        "Cardio Zone",
+        "Strength Training",
       ];
       break;
 
     case "Salon":
-      heroSubtitle = `Beauty That Inspires Confidence`;
+      heroTitle = businessName || "My Salon";
+      heroSubtitle = `Beauty and style experts in ${city}.`;
+      about =
+        "We provide premium beauty and grooming services using professional products in a relaxing environment.";
       services = [
-        "💇 Hair Styling",
-        "💅 Nail Care",
-        "💆 Spa Treatments",
+        "Hair Styling",
+        "Skin Care",
+        "Spa",
       ];
       break;
 
     case "Clinic":
-      heroSubtitle = `Professional Healthcare in ${city}`;
+      heroTitle = businessName || "My Clinic";
+      heroSubtitle = `Professional healthcare services in ${city}.`;
+      about =
+        "Our experienced medical professionals are dedicated to providing quality healthcare with compassion and care.";
       services = [
-        "🩺 Health Checkups",
-        "👨‍⚕️ Specialist Doctors",
-        "💊 Pharmacy",
+        "General Checkup",
+        "Diagnostics",
+        "Emergency Care",
       ];
       break;
 
     case "Real Estate":
-      heroSubtitle = `Find Your Dream Property`;
+      heroTitle = businessName || "My Real Estate";
+      heroSubtitle = `Helping you find the perfect property in ${city}.`;
+      about =
+        "We specialize in buying, selling, and renting residential and commercial properties with trusted local expertise.";
       services = [
-        "🏠 Property Sales",
-        "🏢 Commercial Spaces",
-        "📈 Investment Advice",
+        "Property Sales",
+        "Property Rental",
+        "Investment Consulting",
       ];
       break;
 
     default:
-      heroSubtitle = `The Best ${businessType} in ${city}`;
+      heroTitle = businessName || "My Business";
+      heroSubtitle = `Serving customers in ${city}.`;
+      about =
+        "We are committed to delivering quality services and excellent customer experiences.";
       services = [
-        "Premium Service",
-        "Friendly Staff",
-        "Affordable Pricing",
+        "Quality Service",
+        "Professional Team",
+        "Customer Support",
       ];
   }
 
   return NextResponse.json({
-    heroTitle: businessName,
+    heroTitle,
     heroSubtitle,
-    about: `${businessName} is a professional ${businessType.toLowerCase()} located in ${city}. ${description}`,
+    about,
     services,
   });
 }
