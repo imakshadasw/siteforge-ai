@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: Request) {
+type Params = {
+  params: Promise<{ id: string }>;
+};
+
+export async function PUT(req: Request, { params }: Params) {
   try {
+    const { id } = await params;
     const body = await req.json();
 
-    const project = await prisma.project.create({
+    const project = await prisma.project.update({
+      where: {
+        id: Number(id),
+      },
       data: {
         businessName: body.businessName,
         businessType: body.businessType,
@@ -20,28 +28,34 @@ export async function POST(req: Request) {
     return NextResponse.json(project);
   } catch (error) {
     console.error(error);
-
     return NextResponse.json(
-      { error: "Failed to save project" },
+      { error: "Failed to update project" },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function DELETE(
+  req: Request,
+  { params }: Params
+) {
   try {
-    const projects = await prisma.project.findMany({
-      orderBy: {
-        createdAt: "desc",
+    const { id } = await params;
+
+    await prisma.project.delete({
+      where: {
+        id: Number(id),
       },
     });
 
-    return NextResponse.json(projects);
+    return NextResponse.json({
+      success: true,
+    });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Failed to load projects" },
+      { error: "Failed to delete project" },
       { status: 500 }
     );
   }

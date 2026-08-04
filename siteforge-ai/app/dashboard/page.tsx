@@ -11,7 +11,6 @@ export default async function Dashboard() {
   return (
     <main className="min-h-screen bg-[#030712] text-white p-10">
       <div className="max-w-7xl mx-auto">
-
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-5xl font-bold text-cyan-400">
@@ -33,6 +32,7 @@ export default async function Dashboard() {
             {projects.map((project) => (
               <ProjectCard
                 key={project.id}
+                id={project.id}
                 name={project.businessName}
                 type={project.businessType}
                 city={project.city}
@@ -40,7 +40,6 @@ export default async function Dashboard() {
             ))}
           </div>
         )}
-
       </div>
     </main>
   );
