@@ -19,11 +19,14 @@ export default function ProjectCard({
   const router = useRouter();
 
   async function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this project?"
-    );
+  console.log("Delete button clicked");
 
-    if (!confirmed) return;
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this project?"
+  );
+
+  if (!confirmed) return;
+
 
     try {
       const response = await fetch(`/api/projects/${id}`, {
