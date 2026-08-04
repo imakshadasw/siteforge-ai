@@ -1,104 +1,80 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+});
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  const { businessName, businessType, city } = body;
+    const prompt = `
+You are a professional website copywriter.
 
-  let heroTitle = "";
-  let heroSubtitle = "";
-  let about = "";
-  let services: string[] = [];
+Business Name: ${body.businessName}
+Business Type: ${body.businessType}
+City: ${body.city}
+Description: ${body.description}
 
-  switch (businessType) {
-    case "Restaurant":
-      heroTitle = businessName || "My Restaurant";
-      heroSubtitle = `Delicious food served fresh every day in ${city}.`;
-      about =
-        "We offer freshly prepared meals made with high-quality ingredients. Whether you're dining with family or friends, we provide a warm and welcoming experience.";
-      services = [
-        "Dine-In",
-        "Home Delivery",
-        "Online Reservation",
-      ];
-      break;
+Return ONLY valid JSON in this exact format:
 
-    case "Cafe":
-      heroTitle = businessName || "My Cafe";
-      heroSubtitle = `Fresh coffee and cozy vibes in ${city}.`;
-      about =
-        "Enjoy handcrafted coffee, delicious snacks, and a relaxing atmosphere perfect for work or catching up with friends.";
-      services = [
-        "Coffee",
-        "Bakery",
-        "Free Wi-Fi",
-      ];
-      break;
+{
+  "heroTitle": "",
+  "heroSubtitle": "",
+  "about": "",
+  "services": [
+    "",
+    "",
+    ""
+  ]
+}
+`;
 
-    case "Gym":
-      heroTitle = businessName || "My Gym";
-      heroSubtitle = `Achieve your fitness goals in ${city}.`;
-      about =
-        "Our gym features modern equipment, certified trainers, and personalized fitness programs to help you stay healthy.";
-      services = [
-        "Personal Training",
-        "Cardio Zone",
-        "Strength Training",
-      ];
-      break;
+    const completion = await client.chat.completions.create({
+      model: "inclusionai/ling-3.0-flash:free",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.8,
+    });
 
-    case "Salon":
-      heroTitle = businessName || "My Salon";
-      heroSubtitle = `Beauty and style experts in ${city}.`;
-      about =
-        "We provide premium beauty and grooming services using professional products in a relaxing environment.";
-      services = [
-        "Hair Styling",
-        "Skin Care",
-        "Spa",
-      ];
-      break;
+    const text = completion.choices[0].message.content;
 
-    case "Clinic":
-      heroTitle = businessName || "My Clinic";
-      heroSubtitle = `Professional healthcare services in ${city}.`;
-      about =
-        "Our experienced medical professionals are dedicated to providing quality healthcare with compassion and care.";
-      services = [
-        "General Checkup",
-        "Diagnostics",
-        "Emergency Care",
-      ];
-      break;
+    if (!text) {
+      throw new Error("AI returned an empty response.");
+    }
 
-    case "Real Estate":
-      heroTitle = businessName || "My Real Estate";
-      heroSubtitle = `Helping you find the perfect property in ${city}.`;
-      about =
-        "We specialize in buying, selling, and renting residential and commercial properties with trusted local expertise.";
-      services = [
-        "Property Sales",
-        "Property Rental",
-        "Investment Consulting",
-      ];
-      break;
+    console.log("===== AI RESPONSE =====");
+    console.log(text);
 
-    default:
-      heroTitle = businessName || "My Business";
-      heroSubtitle = `Serving customers in ${city}.`;
-      about =
-        "We are committed to delivering quality services and excellent customer experiences.";
-      services = [
-        "Quality Service",
-        "Professional Team",
-        "Customer Support",
-      ];
+    const cleaned = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const data = JSON.parse(cleaned);
+
+    return NextResponse.json(data);
+
+  } catch (error: any) {
+    console.error("===== AI ERROR =====");
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: error?.message || "Unknown error",
+        details: error?.error?.message || null,
+        stack: error?.stack || null,
+      },
+      {
+        status: 500,
+      }
+    );
   }
-
-  return NextResponse.json({
-    heroTitle,
-    heroSubtitle,
-    about,
-    services,
-  });
 }

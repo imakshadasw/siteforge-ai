@@ -41,8 +41,11 @@ export default function GeneratorForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate website");
-      }
+  const err = await response.json();
+  console.log(err);
+  alert(JSON.stringify(err, null, 2));
+  return;
+}
 
       const data: GenerateResponse = await response.json();
 
@@ -67,7 +70,7 @@ export default function GeneratorForm() {
       });
     } catch (error) {
       console.error(error);
-      alert("Something went wrong.");
+      alert(error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
