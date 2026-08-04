@@ -18,7 +18,6 @@ export default function GeneratorForm() {
   const [businessType, setBusinessType] = useState("Restaurant");
   const [city, setCity] = useState("");
   const [description, setDescription] = useState("");
-
   const [theme, setTheme] = useState("Dark");
 
   const [generated, setGenerated] = useState(false);
@@ -49,6 +48,23 @@ export default function GeneratorForm() {
 
       setResult(data);
       setGenerated(true);
+
+      // Save project to database
+      await fetch("/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          businessName,
+          businessType,
+          city,
+          description,
+          heroTitle: data.heroTitle,
+          heroSubtitle: data.heroSubtitle,
+          about: data.about,
+        }),
+      });
     } catch (error) {
       console.error(error);
       alert("Something went wrong.");
@@ -58,15 +74,13 @@ export default function GeneratorForm() {
   };
 
   return (
-    <section className="py-24 px-6">
+    <section id="generator" className="py-24 px-6">
       <div className="max-w-4xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
-
         <h2 className="text-4xl font-bold text-center text-cyan-400 mb-8">
           Generate Your Website
         </h2>
 
         <div className="space-y-6">
-
           <input
             type="text"
             placeholder="Business Name"
@@ -115,17 +129,17 @@ export default function GeneratorForm() {
           >
             {loading ? "Generating..." : "✨ Generate Website"}
           </button>
-
         </div>
 
         {generated && result && (
-          <WebsitePreview
-            data={result}
-            city={city}
-            theme={theme}
-          />
+          <div className="mt-10">
+            <WebsitePreview
+              data={result}
+              city={city}
+              theme={theme}
+            />
+          </div>
         )}
-
       </div>
     </section>
   );
