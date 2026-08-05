@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const prompt = `
 You are an expert website copywriter.
 
-Generate a professional business website.
+Generate a complete landing page for this business.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
@@ -29,16 +29,19 @@ Return ONLY valid JSON.
   "heroTitle": "",
   "heroSubtitle": "",
   "about": "",
+
   "services": [
     "",
     "",
     ""
   ],
+
   "whyChooseUs": [
     "",
     "",
     ""
   ],
+
   "testimonials": [
     {
       "name": "",
@@ -49,12 +52,21 @@ Return ONLY valid JSON.
       "review": ""
     }
   ],
+
   "contact": {
     "phone": "",
     "email": "",
     "address": ""
   }
 }
+
+Rules:
+- No markdown
+- No explanations
+- Return JSON only
+- Make the content realistic and professional
+- Services should be short titles
+- Testimonials should sound genuine
 `;
 
     const completion = await client.chat.completions.create({
@@ -74,9 +86,6 @@ Return ONLY valid JSON.
       throw new Error("AI returned an empty response.");
     }
 
-    console.log("===== AI RESPONSE =====");
-    console.log(text);
-
     const cleaned = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -91,30 +100,43 @@ Return ONLY valid JSON.
         city: body.city,
         description: body.description,
 
-        theme: body.theme || "Dark",
+        theme: body.theme ?? "Dark",
 
-        heroTitle: data.heroTitle,
-        heroSubtitle: data.heroSubtitle,
-        about: data.about,
+        heroTitle: data.heroTitle ?? "",
+        heroSubtitle: data.heroSubtitle ?? "",
+        about: data.about ?? "",
 
-        services: data.services,
-        whyChooseUs: data.whyChooseUs,
-        testimonials: data.testimonials,
+        services: data.services ?? [],
 
-        phone: data.contact.phone,
-        email: data.contact.email,
-        address: data.contact.address,
+        whyChooseUs: data.whyChooseUs ?? [],
+
+        testimonials: data.testimonials ?? [],
+
+        phone: data.contact?.phone ?? "",
+        email: data.contact?.email ?? "",
+        address: data.contact?.address ?? "",
       },
     });
 
     return NextResponse.json({
-      ...project,
-      services: data.services,
-      whyChooseUs: data.whyChooseUs,
-      testimonials: data.testimonials,
-      contact: data.contact,
-    });
+      id: project.id,
 
+      heroTitle: data.heroTitle ?? "",
+      heroSubtitle: data.heroSubtitle ?? "",
+      about: data.about ?? "",
+
+      services: data.services ?? [],
+
+      whyChooseUs: data.whyChooseUs ?? [],
+
+      testimonials: data.testimonials ?? [],
+
+      contact: {
+        phone: data.contact?.phone ?? "",
+        email: data.contact?.email ?? "",
+        address: data.contact?.address ?? "",
+      },
+    });
   } catch (error: any) {
     console.error("===== AI ERROR =====");
     console.error(error);
@@ -124,7 +146,6 @@ Return ONLY valid JSON.
         success: false,
         message: error?.message || "Unknown error",
         details: error?.error?.message || null,
-        stack: error?.stack || null,
       },
       {
         status: 500,

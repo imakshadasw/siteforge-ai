@@ -4,21 +4,29 @@ import { useState } from "react";
 import WebsitePreview from "./WebsitePreview";
 import ThemeSelector from "./ThemeSelector";
 
+type Testimonial = {
+  name: string;
+  review: string;
+};
+
+type Contact = {
+  phone: string;
+  email: string;
+  address: string;
+};
+
 type GenerateResponse = {
   heroTitle: string;
   heroSubtitle: string;
   about: string;
+
   services: string[];
+
   whyChooseUs: string[];
-  testimonials: {
-    name: string;
-    review: string;
-  }[];
-  contact: {
-    phone: string;
-    email: string;
-    address: string;
-  };
+
+  testimonials: Testimonial[];
+
+  contact: Contact;
 };
 
 export default function GeneratorForm() {
@@ -51,20 +59,24 @@ export default function GeneratorForm() {
         }),
       });
 
+      const json = await response.json();
+
       if (!response.ok) {
-        const err = await response.json();
-        console.log(err);
-        alert(JSON.stringify(err, null, 2));
+        console.error(json);
+        alert(json.message || "Generation failed.");
         return;
       }
 
-      const data: GenerateResponse = await response.json();
-
-      setResult(data);
+      setResult(json);
       setGenerated(true);
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : String(error));
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong."
+      );
     } finally {
       setLoading(false);
     }
@@ -73,23 +85,25 @@ export default function GeneratorForm() {
   return (
     <section id="generator" className="py-24 px-6">
       <div className="max-w-5xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
+
         <h2 className="text-4xl font-bold text-center text-cyan-400 mb-8">
           Generate Your Website
         </h2>
 
         <div className="space-y-6">
+
           <input
             type="text"
             placeholder="Business Name"
             value={businessName}
             onChange={(e) => setBusinessName(e.target.value)}
-            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900 focus:outline-none focus:border-cyan-400"
+            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900"
           />
 
           <select
             value={businessType}
             onChange={(e) => setBusinessType(e.target.value)}
-            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900 focus:outline-none focus:border-cyan-400"
+            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900"
           >
             <option>Restaurant</option>
             <option>Cafe</option>
@@ -97,6 +111,8 @@ export default function GeneratorForm() {
             <option>Salon</option>
             <option>Clinic</option>
             <option>Real Estate</option>
+            <option>Law Firm</option>
+            <option>Construction</option>
           </select>
 
           <ThemeSelector
@@ -109,7 +125,7 @@ export default function GeneratorForm() {
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900 focus:outline-none focus:border-cyan-400"
+            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900"
           />
 
           <textarea
@@ -117,20 +133,21 @@ export default function GeneratorForm() {
             placeholder="Describe your business..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900 focus:outline-none focus:border-cyan-400"
+            className="w-full p-4 rounded-xl bg-[#111827] border border-cyan-900"
           />
 
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 transition py-4 rounded-xl font-bold text-black"
+            className="w-full bg-cyan-500 hover:bg-cyan-400 transition py-4 rounded-xl font-bold text-black disabled:opacity-50"
           >
             {loading ? "Generating..." : "✨ Generate Website"}
           </button>
+
         </div>
 
         {generated && result && (
-          <div className="mt-10">
+          <div className="mt-12">
             <WebsitePreview
               data={result}
               city={city}
@@ -138,6 +155,7 @@ export default function GeneratorForm() {
             />
           </div>
         )}
+
       </div>
     </section>
   );
