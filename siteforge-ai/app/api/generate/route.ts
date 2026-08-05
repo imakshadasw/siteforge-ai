@@ -23,7 +23,7 @@ Business Type: ${body.businessType}
 City: ${body.city}
 Description: ${body.description}
 
-Return ONLY valid JSON in this exact format.
+Return ONLY valid JSON.
 
 {
   "heroTitle": "",
@@ -47,15 +47,11 @@ Return ONLY valid JSON in this exact format.
     {
       "name": "",
       "review": ""
-    },
-    {
-      "name": "",
-      "review": ""
     }
   ],
   "contact": {
-    "phone": "+91 9876543210",
-    "email": "contact@example.com",
+    "phone": "",
+    "email": "",
     "address": ""
   }
 }
