@@ -8,15 +8,28 @@ datasource db {
 }
 
 model Project {
-  id            Int      @id @default(autoincrement())
-  businessName  String
-  businessType  String
-  city          String
-  description   String
+  id             Int      @id @default(autoincrement())
 
-  heroTitle     String
-  heroSubtitle  String
-  about         String
+  businessName   String
+  businessType   String
+  city           String
+  description    String
 
-  createdAt     DateTime @default(now())
+  theme          String   @default("Dark")
+
+  heroTitle      String
+  heroSubtitle   String
+  about          String
+
+  services       Json
+  whyChooseUs    Json
+
+  testimonials   Json
+
+  phone          String?
+  email          String?
+  address        String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

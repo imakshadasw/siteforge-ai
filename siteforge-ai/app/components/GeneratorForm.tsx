@@ -9,6 +9,16 @@ type GenerateResponse = {
   heroSubtitle: string;
   about: string;
   services: string[];
+  whyChooseUs: string[];
+  testimonials: {
+    name: string;
+    review: string;
+  }[];
+  contact: {
+    phone: string;
+    email: string;
+    address: string;
+  };
 };
 
 export default function GeneratorForm() {
@@ -37,37 +47,21 @@ export default function GeneratorForm() {
           businessType,
           city,
           description,
+          theme,
         }),
       });
 
       if (!response.ok) {
-  const err = await response.json();
-  console.log(err);
-  alert(JSON.stringify(err, null, 2));
-  return;
-}
+        const err = await response.json();
+        console.log(err);
+        alert(JSON.stringify(err, null, 2));
+        return;
+      }
 
       const data: GenerateResponse = await response.json();
 
       setResult(data);
       setGenerated(true);
-
-      // Save project to database
-      await fetch("/api/projects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          businessName,
-          businessType,
-          city,
-          description,
-          heroTitle: data.heroTitle,
-          heroSubtitle: data.heroSubtitle,
-          about: data.about,
-        }),
-      });
     } catch (error) {
       console.error(error);
       alert(error instanceof Error ? error.message : String(error));
@@ -78,7 +72,7 @@ export default function GeneratorForm() {
 
   return (
     <section id="generator" className="py-24 px-6">
-      <div className="max-w-4xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
+      <div className="max-w-5xl mx-auto bg-[#0b1120] border border-cyan-900 rounded-2xl p-10">
         <h2 className="text-4xl font-bold text-center text-cyan-400 mb-8">
           Generate Your Website
         </h2>
@@ -128,7 +122,8 @@ export default function GeneratorForm() {
 
           <button
             onClick={handleGenerate}
-            className="w-full bg-cyan-500 hover:bg-cyan-400 transition py-4 rounded-xl font-bold text-black"
+            disabled={loading}
+            className="w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 transition py-4 rounded-xl font-bold text-black"
           >
             {loading ? "Generating..." : "✨ Generate Website"}
           </button>

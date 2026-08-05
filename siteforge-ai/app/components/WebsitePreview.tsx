@@ -4,6 +4,16 @@ type Props = {
     heroSubtitle: string;
     about: string;
     services: string[];
+    whyChooseUs: string[];
+    testimonials: {
+      name: string;
+      review: string;
+    }[];
+    contact: {
+      phone: string;
+      email: string;
+      address: string;
+    };
   };
   city: string;
   theme: string;
@@ -14,136 +24,159 @@ export default function WebsitePreview({
   city,
   theme,
 }: Props) {
-  const themes = {
-    Dark: {
-      hero: "from-cyan-600 to-blue-700",
-      bg: "bg-[#030712]",
-      card: "bg-[#111827]",
-      text: "text-white",
-    },
-    Modern: {
-      hero: "from-purple-600 to-pink-600",
-      bg: "bg-white",
-      card: "bg-gray-100",
-      text: "text-gray-900",
-    },
-    Luxury: {
-      hero: "from-yellow-500 to-amber-700",
-      bg: "bg-black",
-      card: "bg-zinc-900",
-      text: "text-yellow-100",
-    },
-    Corporate: {
-      hero: "from-blue-700 to-sky-500",
-      bg: "bg-white",
-      card: "bg-blue-50",
-      text: "text-gray-900",
-    },
-  };
-
-  const currentTheme =
-    themes[theme as keyof typeof themes] || themes.Dark;
+  const dark = theme === "Dark";
 
   return (
-    <section
-      className={`mt-12 rounded-3xl overflow-hidden shadow-2xl ${currentTheme.bg}`}
+    <div
+      className={`mt-10 rounded-3xl overflow-hidden shadow-2xl border ${
+        dark
+          ? "bg-[#030712] text-white border-cyan-900"
+          : "bg-white text-gray-900 border-gray-200"
+      }`}
     >
-      {/* Hero */}
-      <div
-        className={`bg-gradient-to-r ${currentTheme.hero} py-20 text-center`}
+      {/* Navbar */}
+      <nav
+        className={`flex justify-between items-center px-10 py-6 ${
+          dark ? "bg-[#0b1120]" : "bg-gray-100"
+        }`}
       >
-        <h1 className="text-5xl font-extrabold text-white">
-          {data.heroTitle}
+        <h1 className="text-3xl font-extrabold text-cyan-400">
+          {city} Business
         </h1>
 
-        <p className="mt-5 text-xl text-white/90">
+        <div className="hidden md:flex gap-8 font-medium">
+          <span>Home</span>
+          <span>About</span>
+          <span>Services</span>
+          <span>Contact</span>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="py-24 px-10 text-center bg-gradient-to-b from-cyan-900/20 to-transparent">
+        <h2 className="text-6xl font-extrabold leading-tight">
+          {data.heroTitle}
+        </h2>
+
+        <p className="mt-6 text-xl opacity-80 max-w-3xl mx-auto">
           {data.heroSubtitle}
         </p>
 
-        <div className="mt-10 flex justify-center gap-4">
-          <button className="bg-white text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition">
-            Visit Us
-          </button>
+        <button className="mt-10 px-8 py-4 rounded-xl bg-cyan-500 text-black font-bold hover:scale-105 transition">
+          Get Started
+        </button>
+      </section>
 
-          <button className="border border-white text-white px-6 py-3 rounded-xl hover:bg-white hover:text-black transition">
-            Contact
-          </button>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className={`p-10 ${currentTheme.text}`}>
-
-        {/* About */}
-        <h2 className="text-3xl font-bold text-cyan-400">
+      {/* About */}
+      <section className="max-w-5xl mx-auto px-10 py-16">
+        <h3 className="text-4xl font-bold text-cyan-400 mb-6">
           About Us
-        </h2>
+        </h3>
 
-        <p className="mt-4 opacity-90 leading-8">
+        <p className="text-lg leading-9 opacity-90">
           {data.about}
         </p>
+      </section>
 
-        {/* Services */}
-        <h2 className="text-3xl font-bold text-cyan-400 mt-14">
+      {/* Services */}
+      <section className="px-10 py-16">
+        <h3 className="text-4xl font-bold text-center text-cyan-400 mb-12">
           Our Services
-        </h2>
+        </h3>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {data.services.map((service, index) => (
             <div
               key={index}
-              className={`${currentTheme.card} rounded-2xl p-6 text-center shadow-lg hover:scale-105 transition`}
+              className={`rounded-2xl p-8 shadow-lg transition hover:scale-105 ${
+                dark ? "bg-[#111827]" : "bg-gray-100"
+              }`}
             >
-              <p className="text-lg font-semibold">
+              <div className="text-4xl mb-4">⭐</div>
+
+              <h4 className="text-xl font-bold">
                 {service}
+              </h4>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="px-10 py-16">
+        <h3 className="text-4xl font-bold text-center text-cyan-400 mb-10">
+          Why Choose Us
+        </h3>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {data.whyChooseUs.map((item, index) => (
+            <div
+              key={index}
+              className={`rounded-xl p-6 ${
+                dark ? "bg-[#111827]" : "bg-gray-100"
+              }`}
+            >
+              <div className="text-green-400 text-2xl mb-3">✔</div>
+
+              <p>{item}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="px-10 py-16">
+        <h3 className="text-4xl font-bold text-center text-cyan-400 mb-10">
+          Testimonials
+        </h3>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {data.testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className={`rounded-2xl p-8 ${
+                dark ? "bg-[#111827]" : "bg-gray-100"
+              }`}
+            >
+              <div className="text-yellow-400 text-xl mb-4">
+                ⭐⭐⭐⭐⭐
+              </div>
+
+              <p className="italic">
+                "{testimonial.review}"
+              </p>
+
+              <p className="mt-6 font-bold text-cyan-400">
+                {testimonial.name}
               </p>
             </div>
           ))}
         </div>
+      </section>
 
-        {/* Reviews */}
-        <h2 className="text-3xl font-bold text-cyan-400 mt-14">
-          Customer Reviews
-        </h2>
+      {/* Contact */}
+      <section className="px-10 py-16">
+        <h3 className="text-4xl font-bold text-center text-cyan-400 mb-10">
+          Contact Us
+        </h3>
 
-        <div className="mt-6 grid md:grid-cols-3 gap-6">
-
-          <div className={`${currentTheme.card} p-6 rounded-2xl`}>
-            ⭐⭐⭐⭐⭐
-            <p className="mt-3">
-              Amazing service and friendly staff!
-            </p>
-          </div>
-
-          <div className={`${currentTheme.card} p-6 rounded-2xl`}>
-            ⭐⭐⭐⭐⭐
-            <p className="mt-3">
-              Highly recommended. Will definitely visit again.
-            </p>
-          </div>
-
-          <div className={`${currentTheme.card} p-6 rounded-2xl`}>
-            ⭐⭐⭐⭐⭐
-            <p className="mt-3">
-              One of the best businesses in the city.
-            </p>
-          </div>
-
+        <div className="max-w-xl mx-auto space-y-4 text-lg">
+          <p>📞 {data.contact.phone}</p>
+          <p>📧 {data.contact.email}</p>
+          <p>📍 {data.contact.address}</p>
         </div>
+      </section>
 
-        {/* Contact */}
-        <h2 className="text-3xl font-bold text-cyan-400 mt-14">
-          Contact
-        </h2>
-
-        <div className={`${currentTheme.card} mt-6 rounded-2xl p-6`}>
-          <p>📍 {city}</p>
-          <p className="mt-3">📞 +91 98765 43210</p>
-          <p className="mt-3">📧 hello@example.com</p>
-          <p className="mt-3">🕒 Mon - Sun : 9:00 AM - 8:00 PM</p>
-        </div>
-
-      </div>
-    </section>
+      {/* Footer */}
+      <footer
+        className={`py-8 text-center ${
+          dark ? "bg-[#0b1120]" : "bg-gray-100"
+        }`}
+      >
+        <p className="text-lg">
+          © {new Date().getFullYear()} {city} Business. Powered by SiteForge AI.
+        </p>
+      </footer>
+    </div>
   );
 }

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -11,14 +14,16 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const prompt = `
-You are a professional website copywriter.
+You are an expert website copywriter.
+
+Generate a professional business website.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
 City: ${body.city}
 Description: ${body.description}
 
-Return ONLY valid JSON in this exact format:
+Return ONLY valid JSON in this exact format.
 
 {
   "heroTitle": "",
@@ -28,7 +33,31 @@ Return ONLY valid JSON in this exact format:
     "",
     "",
     ""
-  ]
+  ],
+  "whyChooseUs": [
+    "",
+    "",
+    ""
+  ],
+  "testimonials": [
+    {
+      "name": "",
+      "review": ""
+    },
+    {
+      "name": "",
+      "review": ""
+    },
+    {
+      "name": "",
+      "review": ""
+    }
+  ],
+  "contact": {
+    "phone": "+91 9876543210",
+    "email": "contact@example.com",
+    "address": ""
+  }
 }
 `;
 
@@ -59,7 +88,36 @@ Return ONLY valid JSON in this exact format:
 
     const data = JSON.parse(cleaned);
 
-    return NextResponse.json(data);
+    const project = await prisma.project.create({
+      data: {
+        businessName: body.businessName,
+        businessType: body.businessType,
+        city: body.city,
+        description: body.description,
+
+        theme: body.theme || "Dark",
+
+        heroTitle: data.heroTitle,
+        heroSubtitle: data.heroSubtitle,
+        about: data.about,
+
+        services: data.services,
+        whyChooseUs: data.whyChooseUs,
+        testimonials: data.testimonials,
+
+        phone: data.contact.phone,
+        email: data.contact.email,
+        address: data.contact.address,
+      },
+    });
+
+    return NextResponse.json({
+      ...project,
+      services: data.services,
+      whyChooseUs: data.whyChooseUs,
+      testimonials: data.testimonials,
+      contact: data.contact,
+    });
 
   } catch (error: any) {
     console.error("===== AI ERROR =====");
