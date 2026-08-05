@@ -16,14 +16,24 @@ export async function POST(req: Request) {
     const prompt = `
 You are an expert website copywriter.
 
-Generate a complete landing page for this business.
+Generate professional website content for this business.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
 City: ${body.city}
 Description: ${body.description}
 
-Return ONLY valid JSON.
+Rules:
+- Return ONLY valid JSON.
+- No markdown.
+- No explanations.
+- Make the content specific to the business type.
+- Generate exactly 6 services.
+- Generate exactly 6 "why choose us" points.
+- Generate exactly 3 testimonials.
+- Create realistic contact information.
+
+JSON format:
 
 {
   "heroTitle": "",
@@ -33,16 +43,26 @@ Return ONLY valid JSON.
   "services": [
     "",
     "",
+    "",
+    "",
+    "",
     ""
   ],
 
   "whyChooseUs": [
     "",
     "",
+    "",
+    "",
+    "",
     ""
   ],
 
   "testimonials": [
+    {
+      "name": "",
+      "review": ""
+    },
     {
       "name": "",
       "review": ""
@@ -59,14 +79,6 @@ Return ONLY valid JSON.
     "address": ""
   }
 }
-
-Rules:
-- No markdown
-- No explanations
-- Return JSON only
-- Make the content realistic and professional
-- Services should be short titles
-- Testimonials should sound genuine
 `;
 
     const completion = await client.chat.completions.create({
@@ -86,6 +98,9 @@ Rules:
       throw new Error("AI returned an empty response.");
     }
 
+    console.log("===== AI RESPONSE =====");
+    console.log(text);
+
     const cleaned = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -100,42 +115,34 @@ Rules:
         city: body.city,
         description: body.description,
 
-        theme: body.theme ?? "Dark",
+        theme: body.theme || "Dark",
 
-        heroTitle: data.heroTitle ?? "",
-        heroSubtitle: data.heroSubtitle ?? "",
-        about: data.about ?? "",
+        heroTitle: data.heroTitle,
+        heroSubtitle: data.heroSubtitle,
+        about: data.about,
 
-        services: data.services ?? [],
+        services: data.services,
+        whyChooseUs: data.whyChooseUs,
+        testimonials: data.testimonials,
 
-        whyChooseUs: data.whyChooseUs ?? [],
-
-        testimonials: data.testimonials ?? [],
-
-        phone: data.contact?.phone ?? "",
-        email: data.contact?.email ?? "",
-        address: data.contact?.address ?? "",
+        phone: data.contact.phone,
+        email: data.contact.email,
+        address: data.contact.address,
       },
     });
 
     return NextResponse.json({
-      id: project.id,
+      heroTitle: data.heroTitle,
+      heroSubtitle: data.heroSubtitle,
+      about: data.about,
 
-      heroTitle: data.heroTitle ?? "",
-      heroSubtitle: data.heroSubtitle ?? "",
-      about: data.about ?? "",
+      services: data.services,
+      whyChooseUs: data.whyChooseUs,
+      testimonials: data.testimonials,
 
-      services: data.services ?? [],
+      contact: data.contact,
 
-      whyChooseUs: data.whyChooseUs ?? [],
-
-      testimonials: data.testimonials ?? [],
-
-      contact: {
-        phone: data.contact?.phone ?? "",
-        email: data.contact?.email ?? "",
-        address: data.contact?.address ?? "",
-      },
+      projectId: project.id,
     });
   } catch (error: any) {
     console.error("===== AI ERROR =====");
