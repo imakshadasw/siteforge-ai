@@ -3,31 +3,7 @@
 import { useState } from "react";
 import WebsitePreview from "./WebsitePreview";
 import ThemeSelector from "./ThemeSelector";
-
-type Testimonial = {
-  name: string;
-  review: string;
-};
-
-type Contact = {
-  phone: string;
-  email: string;
-  address: string;
-};
-
-type GenerateResponse = {
-  heroTitle: string;
-  heroSubtitle: string;
-  about: string;
-
-  services: string[];
-
-  whyChooseUs: string[];
-
-  testimonials: Testimonial[];
-
-  contact: Contact;
-};
+import { WebsiteData, Theme } from "../types/website";
 
 export default function GeneratorForm() {
   const [loading, setLoading] = useState(false);
@@ -36,10 +12,10 @@ export default function GeneratorForm() {
   const [businessType, setBusinessType] = useState("Restaurant");
   const [city, setCity] = useState("");
   const [description, setDescription] = useState("");
-  const [theme, setTheme] = useState("Dark");
+  const [theme, setTheme] = useState<Theme>("Dark");
 
   const [generated, setGenerated] = useState(false);
-  const [result, setResult] = useState<GenerateResponse | null>(null);
+  const [result, setResult] = useState<WebsiteData | null>(null);
 
   const handleGenerate = async () => {
     try {
