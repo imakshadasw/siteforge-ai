@@ -1,3 +1,18 @@
+"use client";
+
+import { motion } from "framer-motion";
+import {
+  UtensilsCrossed,
+  Coffee,
+  Dumbbell,
+  Scissors,
+  HeartPulse,
+  Building2,
+  Scale,
+  Hammer,
+  Briefcase,
+  LucideIcon,
+} from "lucide-react";
 import { Theme } from "../types/website";
 
 type Props = {
@@ -5,80 +20,157 @@ type Props = {
   theme: Theme;
 };
 
-const icons = [
-  "🚀",
-  "⭐",
-  "💼",
-  "📈",
-  "⚡",
-  "🎯",
-];
-
 export default function ServicesSection({
   services,
   theme,
 }: Props) {
   const dark = theme === "Dark";
 
+  const getIcon = (service: string): LucideIcon => {
+    const text = service.toLowerCase();
+
+    if (
+      text.includes("restaurant") ||
+      text.includes("food") ||
+      text.includes("dining")
+    )
+      return UtensilsCrossed;
+
+    if (
+      text.includes("cafe") ||
+      text.includes("coffee")
+    )
+      return Coffee;
+
+    if (
+      text.includes("gym") ||
+      text.includes("fitness")
+    )
+      return Dumbbell;
+
+    if (
+      text.includes("salon") ||
+      text.includes("beauty") ||
+      text.includes("hair")
+    )
+      return Scissors;
+
+    if (
+      text.includes("clinic") ||
+      text.includes("medical") ||
+      text.includes("health")
+    )
+      return HeartPulse;
+
+    if (
+      text.includes("real estate") ||
+      text.includes("property")
+    )
+      return Building2;
+
+    if (
+      text.includes("law") ||
+      text.includes("legal")
+    )
+      return Scale;
+
+    if (
+      text.includes("construction") ||
+      text.includes("builder")
+    )
+      return Hammer;
+
+    return Briefcase;
+  };
+
   return (
     <section
-      className={`px-8 py-20 ${
-        dark ? "bg-[#0b1120]" : "bg-gray-50"
+      className={`py-24 px-8 ${
+        dark
+          ? "bg-[#0b1120]"
+          : "bg-slate-50"
       }`}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="text-center mb-14">
-          <span className="text-cyan-400 font-semibold uppercase tracking-wider">
+        <div className="text-center mb-16">
+          <span className="inline-block rounded-full bg-cyan-500/10 border border-cyan-500/30 px-4 py-2 text-cyan-400 text-sm font-semibold">
             Our Services
           </span>
 
-          <h2 className="mt-3 text-4xl font-bold">
-            Solutions Designed For Your Business
+          <h2 className="mt-6 text-4xl md:text-5xl font-bold">
+            What We Offer
           </h2>
 
           <p
-            className={`mt-5 max-w-2xl mx-auto ${
-              dark ? "text-gray-300" : "text-gray-600"
+            className={`mt-5 max-w-2xl mx-auto text-lg ${
+              dark
+                ? "text-gray-300"
+                : "text-gray-600"
             }`}
           >
-            We provide high-quality services tailored to help your
-            business grow faster and stand out from the competition.
+            High-quality services designed to help your business grow.
           </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className={`rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-                dark
-                  ? "bg-[#111827] border border-cyan-900"
-                  : "bg-white border border-gray-200"
-              }`}
-            >
-              <div className="text-5xl mb-6">
-                {icons[index % icons.length]}
-              </div>
 
-              <h3 className="text-2xl font-bold">
-                {service}
-              </h3>
+          {services.map((service, index) => {
+            const Icon = getIcon(service);
 
-              <p
-                className={`mt-4 leading-7 ${
-                  dark ? "text-gray-300" : "text-gray-600"
+            return (
+              <motion.div
+                key={index}
+                initial={{
+                  opacity: 0,
+                  y: 30,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  delay: index * 0.08,
+                }}
+                whileHover={{
+                  y: -8,
+                }}
+                className={`group rounded-3xl border p-8 transition-all duration-300 ${
+                  dark
+                    ? "border-cyan-900 bg-white/5 hover:border-cyan-500"
+                    : "border-gray-200 bg-white hover:border-cyan-400"
                 }`}
               >
-                Professional solutions designed to deliver
-                measurable results for your business.
-              </p>
+                <div className="inline-flex rounded-2xl bg-cyan-500/10 p-4 text-cyan-400 transition group-hover:scale-110">
+                  <Icon size={34} />
+                </div>
 
-              <button className="mt-6 text-cyan-400 font-semibold hover:underline">
-                Learn More →
-              </button>
-            </div>
-          ))}
+                <h3 className="mt-6 text-2xl font-bold">
+                  {service}
+                </h3>
+
+                <p
+                  className={`mt-4 leading-7 ${
+                    dark
+                      ? "text-gray-300"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Professional solutions tailored to your business
+                  with quality, reliability, and customer satisfaction
+                  at the core of everything we do.
+                </p>
+
+                <button className="mt-8 font-semibold text-cyan-400 hover:text-cyan-300 transition">
+                  Learn More →
+                </button>
+              </motion.div>
+            );
+          })}
+
         </div>
 
       </div>

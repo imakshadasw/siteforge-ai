@@ -1,6 +1,11 @@
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import ServicesSection from "./ServicesSection";
+import WhyChooseSection from "./WhyChooseSection";
+import TestimonialsSection from "./TestimonialsSection";
+import ContactSection from "./ContactSection";
+import FooterSection from "./FooterSection";
+
 import { Theme, WebsiteData } from "../types/website";
 
 type Props = {
@@ -60,26 +65,29 @@ export default function WebsitePreview({
         theme={theme}
       />
 
-      {/* Coming Soon */}
-      <section className="px-8 py-20 text-center">
-        <h2 className="text-3xl font-bold text-cyan-400">
-          More Awesome Sections Coming
-        </h2>
+      {/* Why Choose Us */}
+      <WhyChooseSection
+        items={data.whyChooseUs}
+        theme={theme}
+      />
 
-        <p className="mt-5 opacity-80 text-lg">
-          The next update will add Why Choose Us, Testimonials,
-          Contact and a beautiful Footer.
-        </p>
-      </section>
+      {/* Testimonials */}
+      <TestimonialsSection
+        testimonials={data.testimonials}
+        theme={theme}
+      />
+
+      {/* Contact */}
+      <ContactSection
+        contact={data.contact}
+        theme={theme}
+      />
 
       {/* Footer */}
-      <footer
-        className={`text-center py-8 ${
-          dark ? "bg-[#0b1120]" : "bg-gray-100"
-        }`}
-      >
-        © {new Date().getFullYear()} {city || "Business"} • Powered by SiteForge AI
-      </footer>
+      <FooterSection
+        businessName={city || "Business"}
+        theme={theme}
+      />
     </div>
   );
 }
