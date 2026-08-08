@@ -14,14 +14,15 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const prompt = `
-You are an expert website copywriter.
+You are an expert website copywriter and UI/UX designer.
 
-Generate a complete landing page for this business.
+Generate a complete landing page and a matching visual design system for this business.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
 City: ${body.city}
 Description: ${body.description}
+User Theme Preference: ${body.theme ?? "Dark"}
 
 Return ONLY valid JSON.
 
@@ -57,18 +58,74 @@ Return ONLY valid JSON.
     "phone": "",
     "email": "",
     "address": ""
+  },
+
+  "design": {
+    "primaryColor": "",
+    "secondaryColor": "",
+    "accentColor": "",
+    "style": "",
+    "borderRadius": ""
   }
 }
 
-Rules:
-- No markdown
-- No explanations
-- Return JSON only
-- Make the content realistic and professional
-- Services should be short titles
-- Testimonials should sound genuine
-- Do not invent specific real-world claims about the business
-- If contact information was not provided, use empty strings
+DESIGN SYSTEM RULES:
+
+- Choose colors that naturally fit the business.
+- primaryColor must be a valid HEX color such as "#06B6D4".
+- secondaryColor must be a valid HEX color.
+- accentColor must be a valid HEX color.
+- Do not use color names. Use HEX values only.
+- style should be a short description such as "Modern", "Luxury", "Minimal", "Corporate", "Elegant", "Bold", or "Professional".
+- borderRadius MUST be exactly one of:
+  "rounded"
+  "soft"
+  "sharp"
+
+BUSINESS STYLE EXAMPLES:
+
+Restaurant:
+- warm colors such as red, orange, amber, cream, or dark brown.
+
+Cafe:
+- coffee, cream, beige, warm brown, or muted green.
+
+Gym:
+- bold colors such as red, orange, lime, electric blue, or black.
+
+Salon:
+- elegant colors such as rose, purple, champagne, beige, or black.
+
+Clinic:
+- trustworthy colors such as blue, teal, cyan, white, or green.
+
+Law Firm:
+- professional colors such as navy, charcoal, dark green, or gold.
+
+Real Estate:
+- premium colors such as navy, emerald, charcoal, gold, or slate.
+
+Construction:
+- strong colors such as orange, yellow, blue, charcoal, or steel.
+
+IMPORTANT:
+- Respect the user's Dark or Light theme preference.
+- Do not make every business cyan.
+- Make the design visually appropriate for the business type.
+- Keep colors professional and readable.
+- Avoid extremely bright backgrounds.
+- Ensure primary and accent colors work well with the selected theme.
+
+CONTENT RULES:
+
+- No markdown.
+- No explanations.
+- Return JSON only.
+- Make the content realistic and professional.
+- Services should be short titles.
+- Testimonials should sound natural.
+- Do not invent specific real-world claims about the business.
+- If contact information was not provided, use empty strings.
 `;
 
     const completion = await client.chat.completions.create({
@@ -97,6 +154,27 @@ Rules:
       .trim();
 
     const data = JSON.parse(cleaned);
+
+    const design = {
+      primaryColor:
+        data.design?.primaryColor ?? "#06B6D4",
+
+      secondaryColor:
+        data.design?.secondaryColor ?? "#0F172A",
+
+      accentColor:
+        data.design?.accentColor ?? "#22D3EE",
+
+      style:
+        data.design?.style ?? "Modern",
+
+      borderRadius:
+        ["rounded", "soft", "sharp"].includes(
+          data.design?.borderRadius
+        )
+          ? data.design.borderRadius
+          : "rounded",
+    };
 
     const project = await prisma.project.create({
       data: {
@@ -153,6 +231,8 @@ Rules:
         email: data.contact?.email ?? "",
         address: data.contact?.address ?? "",
       },
+
+      design,
     });
   } catch (error: any) {
     console.error("===== AI ERROR =====");

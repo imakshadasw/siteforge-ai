@@ -22,6 +22,14 @@ export default function WebsitePreview({
 }: Props) {
   const dark = theme === "Dark";
 
+  const design = data.design ?? {
+    primaryColor: "#06B6D4",
+    secondaryColor: "#0F172A",
+    accentColor: "#22D3EE",
+    style: "Modern",
+    borderRadius: "rounded" as const,
+  };
+
   const businessName =
     data.heroTitle?.trim() ||
     city ||
@@ -29,23 +37,39 @@ export default function WebsitePreview({
 
   return (
     <div
-      className={`mt-10 overflow-hidden rounded-2xl border shadow-2xl ${
+      style={
+        {
+          "--primary-color": design.primaryColor,
+          "--secondary-color": design.secondaryColor,
+          "--accent-color": design.accentColor,
+        } as React.CSSProperties
+      }
+      className={`mt-10 overflow-hidden border shadow-2xl ${
+        design.borderRadius === "sharp"
+          ? "rounded-none"
+          : design.borderRadius === "soft"
+            ? "rounded-xl"
+            : "rounded-2xl"
+      } ${
         dark
-          ? "border-cyan-900 bg-[#030712] text-white"
-          : "border-gray-200 bg-white text-gray-900"
+          ? "bg-[#030712] text-white"
+          : "bg-white text-gray-900"
       }`}
     >
       {/* Preview Navbar */}
       <header
         className={`sticky top-0 z-30 flex items-center justify-between border-b px-6 py-5 backdrop-blur-xl md:px-8 ${
           dark
-            ? "border-cyan-900 bg-[#0b1120]/90"
+            ? "border-white/10 bg-[#0b1120]/90"
             : "border-gray-200 bg-white/90"
         }`}
       >
         <a
           href="#preview-home"
-          className="text-xl font-extrabold text-cyan-400 md:text-2xl"
+          className="text-xl font-extrabold md:text-2xl"
+          style={{
+            color: design.primaryColor,
+          }}
         >
           {city || "Business"}
         </a>
@@ -53,35 +77,35 @@ export default function WebsitePreview({
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
           <a
             href="#preview-home"
-            className="transition hover:text-cyan-400"
+            className="transition hover:opacity-70"
           >
             Home
           </a>
 
           <a
             href="#about"
-            className="transition hover:text-cyan-400"
+            className="transition hover:opacity-70"
           >
             About
           </a>
 
           <a
             href="#services"
-            className="transition hover:text-cyan-400"
+            className="transition hover:opacity-70"
           >
             Services
           </a>
 
           <a
             href="#testimonials"
-            className="transition hover:text-cyan-400"
+            className="transition hover:opacity-70"
           >
             Reviews
           </a>
 
           <a
             href="#contact"
-            className="transition hover:text-cyan-400"
+            className="transition hover:opacity-70"
           >
             Contact
           </a>
@@ -89,7 +113,10 @@ export default function WebsitePreview({
 
         <a
           href="#contact"
-          className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-black transition hover:bg-cyan-400"
+          className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
+          style={{
+            backgroundColor: design.primaryColor,
+          }}
         >
           Get Started
         </a>
@@ -106,47 +133,53 @@ export default function WebsitePreview({
       {/* About */}
       <div id="about">
         <AboutSection
-          about={data.about}
-          theme={theme}
-        />
+  about={data.about}
+  theme={theme}
+  design={data.design}
+/>
       </div>
 
       {/* Services */}
       <div id="services">
         <ServicesSection
-          services={data.services}
-          theme={theme}
-        />
+  services={data.services}
+  theme={theme}
+  design={data.design}
+/>
       </div>
 
       {/* Why Choose Us */}
       <WhyChooseSection
-        items={data.whyChooseUs}
-        theme={theme}
-      />
+  items={data.whyChooseUs}
+  theme={theme}
+  design={data.design}
+/>
 
       {/* Testimonials */}
       <div id="testimonials">
         <TestimonialsSection
-          testimonials={data.testimonials}
-          theme={theme}
-        />
+  testimonials={data.testimonials}
+  theme={theme}
+  design={data.design}
+/>
       </div>
 
       {/* Contact */}
       <div id="contact">
         <ContactSection
-          contact={data.contact}
-          theme={theme}
-        />
+  contact={data.contact}
+  theme={theme}
+  design={data.design}
+/>
       </div>
 
       {/* Footer */}
       <FooterSection
-        businessName={businessName}
-        contact={data.contact}
-        theme={theme}
-      />
+  businessName={businessName}
+  contact={data.contact}
+  theme={theme}
+  design={data.design}
+/>
     </div>
   );
 }

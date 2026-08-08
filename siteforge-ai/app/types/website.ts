@@ -9,6 +9,14 @@ export type Contact = {
   address: string;
 };
 
+export type DesignSystem = {
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  style: string;
+  borderRadius: "rounded" | "soft" | "sharp";
+};
+
 export type WebsiteData = {
   heroTitle: string;
   heroSubtitle: string;
@@ -22,6 +30,8 @@ export type WebsiteData = {
   testimonials: Testimonial[];
 
   contact: Contact;
+
+  design?: DesignSystem;
 };
 
 export type Theme = "Dark" | "Light";

@@ -1,158 +1,176 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  CheckCircle2,
-  ShieldCheck,
-  Sparkles,
-  Users,
-  Zap,
-} from "lucide-react";
-import { Theme } from "../types/website";
+import { CheckCircle2, Sparkles } from "lucide-react";
+import { Theme, DesignSystem } from "../types/website";
 
 type Props = {
   items: string[];
   theme: Theme;
+  design?: DesignSystem;
 };
 
 export default function WhyChooseSection({
   items,
   theme,
+  design,
 }: Props) {
   const dark = theme === "Dark";
 
-  const icons = [
-    ShieldCheck,
-    Sparkles,
-    Users,
-    Zap,
-    CheckCircle2,
-  ];
+  const colors = design ?? {
+    primaryColor: "#06B6D4",
+    secondaryColor: "#0F172A",
+    accentColor: "#22D3EE",
+    style: "Modern",
+    borderRadius: "rounded" as const,
+  };
+
+  const radius =
+    colors.borderRadius === "sharp"
+      ? "rounded-none"
+      : colors.borderRadius === "soft"
+        ? "rounded-2xl"
+        : "rounded-3xl";
 
   return (
     <section
       className={`relative overflow-hidden px-8 py-28 ${
         dark
-          ? "bg-[#0b1120] text-white"
-          : "bg-slate-50 text-gray-900"
+          ? "bg-[#030712]"
+          : "bg-white"
       }`}
     >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
-      </div>
+      <div
+        className="pointer-events-none absolute right-[-150px] top-1/2 h-96 w-96 -translate-y-1/2 rounded-full blur-3xl opacity-10"
+        style={{
+          backgroundColor: colors.accentColor,
+        }}
+      />
 
       <div className="relative mx-auto max-w-7xl">
-        {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-400">
-            <Sparkles size={16} />
-            Why Choose Us
-          </div>
+        <div className="grid items-center gap-16 lg:grid-cols-2">
 
-          <h2 className="mt-6 text-4xl font-bold md:text-5xl">
-            A better experience,{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              every time
-            </span>
-          </h2>
-
-          <p
-            className={`mt-5 text-lg leading-8 ${
-              dark
-                ? "text-gray-300"
-                : "text-gray-600"
-            }`}
+          {/* Left */}
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: -30,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.7,
+            }}
           >
-            We focus on quality, reliability, and creating
-            experiences that keep our customers coming back.
-          </p>
-        </motion.div>
+            <div
+              className={`inline-flex items-center gap-2 border px-4 py-2 text-sm font-semibold ${radius}`}
+              style={{
+                borderColor: `${colors.primaryColor}55`,
+                backgroundColor: `${colors.primaryColor}15`,
+                color: colors.primaryColor,
+              }}
+            >
+              <Sparkles size={16} />
+              Why Choose Us
+            </div>
 
-        {/* Cards */}
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((item, index) => {
-            const Icon = icons[index % icons.length];
+            <h2
+              className={`mt-6 text-4xl font-bold leading-tight md:text-5xl ${
+                dark
+                  ? "text-white"
+                  : "text-gray-900"
+              }`}
+            >
+              Built around{" "}
+              <span
+                style={{
+                  color: colors.primaryColor,
+                }}
+              >
+                your success
+              </span>
+            </h2>
 
-            return (
+            <p
+              className={`mt-6 max-w-xl text-lg leading-8 ${
+                dark
+                  ? "text-gray-400"
+                  : "text-gray-600"
+              }`}
+            >
+              We focus on quality, reliability, and creating
+              experiences that make a real difference for our
+              customers.
+            </p>
+          </motion.div>
+
+          {/* Right */}
+          <div className="space-y-4">
+            {items.map((item, index) => (
               <motion.div
                 key={`${item}-${index}`}
                 initial={{
                   opacity: 0,
-                  y: 30,
+                  x: 30,
                 }}
                 whileInView={{
                   opacity: 1,
-                  y: 0,
+                  x: 0,
                 }}
                 viewport={{
                   once: true,
-                  margin: "-80px",
                 }}
                 transition={{
                   duration: 0.5,
                   delay: index * 0.08,
                 }}
-                whileHover={{
-                  y: -8,
-                }}
-                className={`group relative overflow-hidden rounded-3xl border p-8 transition-all duration-300 ${
+                className={`flex items-start gap-5 border p-5 transition ${
                   dark
-                    ? "border-cyan-900 bg-white/[0.04] hover:border-cyan-500 hover:bg-white/[0.07]"
-                    : "border-gray-200 bg-white hover:border-cyan-400 hover:shadow-xl"
-                }`}
+                    ? "border-white/10 bg-white/[0.04] hover:bg-white/[0.07]"
+                    : "border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md"
+                } ${radius}`}
               >
-                {/* Hover glow */}
-                <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-cyan-500/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+                <div
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                  style={{
+                    backgroundColor: `${colors.primaryColor}15`,
+                    color: colors.primaryColor,
+                  }}
+                >
+                  <CheckCircle2 size={21} />
+                </div>
 
-                <div className="relative">
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 transition-transform duration-300 group-hover:scale-110">
-                      <Icon size={28} />
-                    </div>
-
-                    <span
-                      className={`text-sm font-semibold ${
-                        dark
-                          ? "text-gray-500"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      0{index + 1}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-7 text-xl font-bold">
-                    {item}
-                  </h3>
-
+                <div>
                   <p
-                    className={`mt-4 leading-7 ${
+                    className={`font-semibold leading-7 ${
                       dark
-                        ? "text-gray-300"
-                        : "text-gray-600"
+                        ? "text-gray-200"
+                        : "text-gray-800"
                     }`}
                   >
-                    We are committed to delivering dependable
-                    results while keeping your goals and
-                    satisfaction at the center of everything
-                    we do.
+                    {item}
                   </p>
-
-                  <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-cyan-400">
-                    <CheckCircle2 size={17} />
-                    Trusted quality
-                  </div>
                 </div>
               </motion.div>
-            );
-          })}
+            ))}
+
+            {items.length === 0 && (
+              <div
+                className={`border p-8 text-center ${radius} ${
+                  dark
+                    ? "border-white/10 bg-white/[0.04]"
+                    : "border-gray-200 bg-gray-50"
+                }`}
+              >
+                No advantages available yet.
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
