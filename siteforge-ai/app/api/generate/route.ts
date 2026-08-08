@@ -16,24 +16,14 @@ export async function POST(req: Request) {
     const prompt = `
 You are an expert website copywriter.
 
-Generate professional website content for this business.
+Generate a complete landing page for this business.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
 City: ${body.city}
 Description: ${body.description}
 
-Rules:
-- Return ONLY valid JSON.
-- No markdown.
-- No explanations.
-- Make the content specific to the business type.
-- Generate exactly 6 services.
-- Generate exactly 6 "why choose us" points.
-- Generate exactly 3 testimonials.
-- Create realistic contact information.
-
-JSON format:
+Return ONLY valid JSON.
 
 {
   "heroTitle": "",
@@ -43,26 +33,16 @@ JSON format:
   "services": [
     "",
     "",
-    "",
-    "",
-    "",
     ""
   ],
 
   "whyChooseUs": [
     "",
     "",
-    "",
-    "",
-    "",
     ""
   ],
 
   "testimonials": [
-    {
-      "name": "",
-      "review": ""
-    },
     {
       "name": "",
       "review": ""
@@ -79,10 +59,20 @@ JSON format:
     "address": ""
   }
 }
+
+Rules:
+- No markdown
+- No explanations
+- Return JSON only
+- Make the content realistic and professional
+- Services should be short titles
+- Testimonials should sound genuine
+- Do not invent specific real-world claims about the business
+- If contact information was not provided, use empty strings
 `;
 
     const completion = await client.chat.completions.create({
-      model: "inclusionai/ling-3.0-flash:free",
+      model: "inclusionai/ling-3.0-flash",
       messages: [
         {
           role: "user",
@@ -92,7 +82,7 @@ JSON format:
       temperature: 0.8,
     });
 
-    const text = completion.choices[0].message.content;
+    const text = completion.choices[0]?.message?.content;
 
     if (!text) {
       throw new Error("AI returned an empty response.");
@@ -110,39 +100,59 @@ JSON format:
 
     const project = await prisma.project.create({
       data: {
-        businessName: body.businessName,
-        businessType: body.businessType,
-        city: body.city,
-        description: body.description,
+        businessName: body.businessName ?? "",
+        businessType: body.businessType ?? "",
+        city: body.city ?? "",
+        description: body.description ?? "",
 
-        theme: body.theme || "Dark",
+        theme: body.theme ?? "Dark",
 
-        heroTitle: data.heroTitle,
-        heroSubtitle: data.heroSubtitle,
-        about: data.about,
+        heroTitle: data.heroTitle ?? "",
+        heroSubtitle: data.heroSubtitle ?? "",
+        about: data.about ?? "",
 
-        services: data.services,
-        whyChooseUs: data.whyChooseUs,
-        testimonials: data.testimonials,
+        services: Array.isArray(data.services)
+          ? data.services
+          : [],
 
-        phone: data.contact.phone,
-        email: data.contact.email,
-        address: data.contact.address,
+        whyChooseUs: Array.isArray(data.whyChooseUs)
+          ? data.whyChooseUs
+          : [],
+
+        testimonials: Array.isArray(data.testimonials)
+          ? data.testimonials
+          : [],
+
+        phone: data.contact?.phone ?? "",
+        email: data.contact?.email ?? "",
+        address: data.contact?.address ?? "",
       },
     });
 
     return NextResponse.json({
-      heroTitle: data.heroTitle,
-      heroSubtitle: data.heroSubtitle,
-      about: data.about,
+      id: project.id,
 
-      services: data.services,
-      whyChooseUs: data.whyChooseUs,
-      testimonials: data.testimonials,
+      heroTitle: data.heroTitle ?? "",
+      heroSubtitle: data.heroSubtitle ?? "",
+      about: data.about ?? "",
 
-      contact: data.contact,
+      services: Array.isArray(data.services)
+        ? data.services
+        : [],
 
-      projectId: project.id,
+      whyChooseUs: Array.isArray(data.whyChooseUs)
+        ? data.whyChooseUs
+        : [],
+
+      testimonials: Array.isArray(data.testimonials)
+        ? data.testimonials
+        : [],
+
+      contact: {
+        phone: data.contact?.phone ?? "",
+        email: data.contact?.email ?? "",
+        address: data.contact?.address ?? "",
+      },
     });
   } catch (error: any) {
     console.error("===== AI ERROR =====");
@@ -151,7 +161,9 @@ JSON format:
     return NextResponse.json(
       {
         success: false,
-        message: error?.message || "Unknown error",
+        message:
+          error?.message ||
+          "Failed to generate website content.",
         details: error?.error?.message || null,
       },
       {
