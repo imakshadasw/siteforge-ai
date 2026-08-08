@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const prompt = `
-You are an expert website copywriter and UI/UX designer.
+You are an expert website copywriter, UI/UX designer, and visual art director.
 
-Generate a complete landing page and a matching visual design system for this business.
+Generate a complete landing page, visual design system, and image strategy for this business.
 
 Business Name: ${body.businessName}
 Business Type: ${body.businessType}
@@ -66,66 +66,105 @@ Return ONLY valid JSON.
     "accentColor": "",
     "style": "",
     "borderRadius": ""
+  },
+
+  "visuals": {
+    "heroImagePrompt": "",
+    "galleryImagePrompts": [
+      "",
+      "",
+      ""
+    ]
   }
 }
 
 DESIGN SYSTEM RULES:
 
 - Choose colors that naturally fit the business.
-- primaryColor must be a valid HEX color such as "#06B6D4".
+- primaryColor must be a valid HEX color.
 - secondaryColor must be a valid HEX color.
 - accentColor must be a valid HEX color.
-- Do not use color names. Use HEX values only.
-- style should be a short description such as "Modern", "Luxury", "Minimal", "Corporate", "Elegant", "Bold", or "Professional".
+- style should be a short description such as:
+  "Modern", "Luxury", "Minimal", "Corporate",
+  "Elegant", "Bold", or "Professional".
 - borderRadius MUST be exactly one of:
   "rounded"
   "soft"
   "sharp"
 
-BUSINESS STYLE EXAMPLES:
+BUSINESS STYLE GUIDELINES:
 
 Restaurant:
-- warm colors such as red, orange, amber, cream, or dark brown.
+- warm, appetizing, premium colors.
+- Examples: red, orange, amber, cream, dark brown.
 
 Cafe:
-- coffee, cream, beige, warm brown, or muted green.
+- cozy and welcoming.
+- Examples: coffee brown, cream, beige, muted green.
 
 Gym:
-- bold colors such as red, orange, lime, electric blue, or black.
+- energetic and powerful.
+- Examples: red, orange, lime, electric blue, black.
 
 Salon:
-- elegant colors such as rose, purple, champagne, beige, or black.
+- elegant and sophisticated.
+- Examples: rose, purple, champagne, beige, black.
 
 Clinic:
-- trustworthy colors such as blue, teal, cyan, white, or green.
+- trustworthy and clean.
+- Examples: blue, teal, cyan, white, green.
 
 Law Firm:
-- professional colors such as navy, charcoal, dark green, or gold.
+- authoritative and premium.
+- Examples: navy, charcoal, dark green, gold.
 
 Real Estate:
-- premium colors such as navy, emerald, charcoal, gold, or slate.
+- premium and trustworthy.
+- Examples: navy, emerald, charcoal, gold, slate.
 
 Construction:
-- strong colors such as orange, yellow, blue, charcoal, or steel.
+- strong and practical.
+- Examples: orange, yellow, blue, charcoal, steel.
 
-IMPORTANT:
-- Respect the user's Dark or Light theme preference.
-- Do not make every business cyan.
-- Make the design visually appropriate for the business type.
-- Keep colors professional and readable.
-- Avoid extremely bright backgrounds.
-- Ensure primary and accent colors work well with the selected theme.
+VISUAL CONTENT RULES:
+
+- Generate image prompts that are specifically relevant to the business.
+- Do NOT use generic phrases like "beautiful business".
+- Describe the actual subject, environment, lighting, composition, and visual style.
+- Prompts should be suitable for an AI image generator.
+- The hero image should represent the main identity of the business.
+- Generate exactly 3 gallery image prompts.
+- Each gallery image should show a different aspect of the business.
+- Keep the imagery professional and realistic.
+- Do not include text, logos, watermarks, or recognizable copyrighted characters.
+- Do not invent specific awards, famous clients, or unverifiable claims.
+- Do not request images of identifiable real people.
+- Avoid overly generic stock-photo language.
+
+EXAMPLES:
+
+For a restaurant:
+
+heroImagePrompt:
+"Premium modern Indian restaurant interior, warm amber pendant lighting, elegant wooden tables, sophisticated dark green and brass details, cinematic architectural photography, realistic, high-end hospitality photography, no people, no text, no logos."
+
+Gallery examples:
+"Close-up of beautifully plated Indian cuisine on a dark ceramic plate, warm restaurant lighting, premium food photography, realistic, no text."
+
+"Elegant Indian restaurant dining room with contemporary interior design, warm ambient lighting, sophisticated atmosphere, architectural photography, no people, no logos."
+
+"Professional chef preparing fresh Indian cuisine in a modern restaurant kitchen, cinematic lighting, realistic editorial photography, no visible face, no text, no logos."
 
 CONTENT RULES:
 
 - No markdown.
 - No explanations.
 - Return JSON only.
-- Make the content realistic and professional.
+- Make content realistic and professional.
 - Services should be short titles.
 - Testimonials should sound natural.
-- Do not invent specific real-world claims about the business.
 - If contact information was not provided, use empty strings.
+- Do not invent specific real-world claims.
 `;
 
     const completion = await client.chat.completions.create({
@@ -174,6 +213,16 @@ CONTENT RULES:
         )
           ? data.design.borderRadius
           : "rounded",
+    };
+
+    const visuals = {
+      heroImagePrompt:
+        data.visuals?.heroImagePrompt ?? "",
+
+      galleryImagePrompts:
+        Array.isArray(data.visuals?.galleryImagePrompts)
+          ? data.visuals.galleryImagePrompts.slice(0, 3)
+          : [],
     };
 
     const project = await prisma.project.create({
@@ -233,6 +282,8 @@ CONTENT RULES:
       },
 
       design,
+
+      visuals,
     });
   } catch (error: any) {
     console.error("===== AI ERROR =====");

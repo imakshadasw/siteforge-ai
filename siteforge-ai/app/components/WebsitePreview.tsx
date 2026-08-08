@@ -1,5 +1,6 @@
 "use client";
 
+import VisualGallery from "./VisualGallery";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import ServicesSection from "./ServicesSection";
@@ -140,16 +141,23 @@ export default function WebsitePreview({
       </div>
 
       {/* Services */}
-      <div id="services">
-        <ServicesSection
-  services={data.services}
+<div id="services">
+  <ServicesSection
+    services={data.services}
+    theme={theme}
+    design={data.design}
+  />
+</div>
+
+{/* Gallery */}
+<VisualGallery
+  visuals={data.visuals}
   theme={theme}
   design={data.design}
 />
-      </div>
 
-      {/* Why Choose Us */}
-      <WhyChooseSection
+{/* Why Choose Us */}
+<WhyChooseSection
   items={data.whyChooseUs}
   theme={theme}
   design={data.design}
